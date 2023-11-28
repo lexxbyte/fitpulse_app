@@ -16,5 +16,5 @@ class AuthenticationUserChanged extends AuthenticationEvent{
   final User? user;
 
   @override
-  List<Object> get props => [user!];
+  List<Object> get props => [user ?? const Object()];
 }

@@ -27,6 +27,8 @@ abstract class UserRepository{
   //koja se desava u pozadini i ne zelimo da blokiramo UI
   Future<void> resetPassword(String email);
 
+  //SignUpWithGoogle metoda
+
   //setUserData metoda nam sluzi kako bi mogli da postavimo podatke na server
   Future<void> setUserData(MyUser myUser);
 

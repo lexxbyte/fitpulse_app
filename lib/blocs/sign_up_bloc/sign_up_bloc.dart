@@ -12,12 +12,13 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   SignUpBloc({
     required UserRepository userRepository,
   })  : _userRepository = userRepository,
-    super(const SignUpInitial()) {
+        super(const SignUpInitial()) {
     on<SignUpRequired>((event, emit) async {
       emit(const SignUpProccess());
       try {
         //Pravimo novog korisnika
-        MyUser user = await _userRepository.signUpWithEmailAndPassword(event.user, event.password);
+        MyUser user = await _userRepository.signUpWithEmailAndPassword(
+            event.user, event.password);
         //Setujemo podatke korisnika u bazu podataka (Firestore)
         await _userRepository.setUserData(user);
         emit(const SignUpSuccess());
@@ -26,5 +27,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         emit(const SignUpFailure(message: 'Sign up failed'));
       }
     });
+    //Pravimo mogucnost prijavljivanja korisnika putem Google naloga
   }
 }

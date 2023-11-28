@@ -11,7 +11,7 @@ class MyUserBloc extends Bloc<MyUserEvent, MyUserState> {
   MyUserBloc({
     required UserRepository userRepository,
   }) : _userRepository = userRepository,
-   super(MyUserState.loading()) {
+   super(const MyUserState.loading()) {
     on<GetMyUser>((event, emit) async {
       //Posto je po defaultu da se emituje loading stanje, ne moramo da ga pisemo dok se vrsi provera 
       //da li je success ili failure

@@ -4,17 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'entities/my_user_entity.dart';
 import 'models/my_user.dart';
 import 'user_repo.dart';
-
 class FirebaseUserRepository implements UserRepository {
   //Konstruktor koji prima FirebaseAuth objekat
   //Ako FirebaseAuth nije prosledjen onda se kreira FirebaseAuth.instance
   //to oznacavaju : i ? u konstruktoru
-  FirebaseUserRepository({FirebaseAuth? firebaseAuth})
-      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
-
-  //_firebaseAuth je privatni atribut koji sluzi za autentifikaciju usera
+  FirebaseUserRepository({FirebaseAuth? firebaseAuth,})
+      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;  //_firebaseAuth je privatni atribut koji sluzi za autentifikaciju usera
   final FirebaseAuth _firebaseAuth;
-
   //usersCollection je privatni atribut koji sluzi za pristup kolekciji users
   final usersCollection = FirebaseFirestore.instance.collection('users');
 
