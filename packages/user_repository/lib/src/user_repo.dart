@@ -35,5 +35,8 @@ abstract class UserRepository{
   //getUserData metoda nam sluzi kako bi mogli da iskoristimo podatke
   //koje smo postavili na server unutar aplikacije
   Future<MyUser> getUserData(String id);
+
+  //Metoda za Google SignIn
+  Future<User?> signInWithGoogle();
   
 }

@@ -18,3 +18,6 @@ class AuthenticationUserChanged extends AuthenticationEvent{
   @override
   List<Object> get props => [user ?? const Object()];
 }
+
+//Dodajemo klasu za Google SignIn 
+class GoogleSignInRequired extends AuthenticationEvent {}

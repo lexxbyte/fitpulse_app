@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'entities/my_user_entity.dart';
 import 'models/my_user.dart';
 import 'user_repo.dart';
@@ -8,11 +9,16 @@ class FirebaseUserRepository implements UserRepository {
   //Konstruktor koji prima FirebaseAuth objekat
   //Ako FirebaseAuth nije prosledjen onda se kreira FirebaseAuth.instance
   //to oznacavaju : i ? u konstruktoru
-  FirebaseUserRepository({FirebaseAuth? firebaseAuth,})
-      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;  //_firebaseAuth je privatni atribut koji sluzi za autentifikaciju usera
+  FirebaseUserRepository({
+    FirebaseAuth? firebaseAuth,
+    GoogleSignIn? googleSignIn
+  })
+      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,  //_firebaseAuth je privatni atribut koji sluzi za autentifikaciju usera
+        _googleSignIn = googleSignIn ?? GoogleSignIn(); //_googleSignIn je privatni atribut koji sluzi za Google SignIn
   final FirebaseAuth _firebaseAuth;
   //usersCollection je privatni atribut koji sluzi za pristup kolekciji users
   final usersCollection = FirebaseFirestore.instance.collection('users');
+  final GoogleSignIn _googleSignIn;
 
   //Stream od [MyUser] koja emituje trenutno stanje usera kada se promeni
   //state autentifikacije
@@ -104,6 +110,38 @@ class FirebaseUserRepository implements UserRepository {
     } catch (e) {
       log(e.toString());
       rethrow;
+    }
+  }
+  
+  @override
+  Future<User?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      //U slucaju da korisnik odustane od Google SignIn-a vracamo null
+      if (googleUser == null) {
+        return null;
+    }
+    //Dobijamo googleAuth objekat od googleUser-a
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    //Koristimo GoogleAuthProvider kako bi dobili AuthCredential objekat
+    //koji nam je potreban za signInWithCredential metodu
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    //Koristimo signInWithCredential metodu kako bi se autentifikovali
+    //i dobili UserCredential objekat
+    final UserCredential userCredential =
+        await _firebaseAuth.signInWithCredential(credential);
+        return userCredential.user;
+    } 
+    catch (e) {
+      log('Google Sign In Error: $e');
+      return null;
     }
   }
 }

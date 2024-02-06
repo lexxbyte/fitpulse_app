@@ -20,14 +20,11 @@ class SignUpSuccess extends SignUpState {
 }
 
 class SignUpFailure extends SignUpState {
-  final String message;
 
-  const SignUpFailure({
-    required this.message,
-  });
+  const SignUpFailure();
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [];
 }
 
 

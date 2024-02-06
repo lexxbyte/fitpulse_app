@@ -27,3 +27,10 @@ class LogOutRequired extends LogInEvent {
   @override
   List<Object> get props => [];
 }
+
+class LogInGoogleSignInRequired extends LogInEvent {
+  const LogInGoogleSignInRequired();
+  
+  @override
+  List<Object> get props => [];
+}

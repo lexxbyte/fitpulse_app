@@ -1,6 +1,10 @@
+import 'package:fitpulse_app/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:fitpulse_app/blocs/log_in_bloc/log_in_bloc.dart';
+import 'package:fitpulse_app/blocs/sign_up_bloc/sign_up_bloc.dart';
 import 'package:fitpulse_app/screens/authentication/log_in_screen.dart';
 import 'package:fitpulse_app/screens/authentication/sign_up_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -78,9 +82,25 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 Expanded(
                   child: TabBarView(
                     controller: tabController,
-                    children: const [
-                      LogInScreen(),
-                      SignUpScreen(),
+                    children: [
+                      //BlocProvider koristimo da bi smo mogli da pristupimo instanci LogInBloc i SignUpBloc
+                      //Da BlocProvider ne postoji ne bi mogli da pristupimo nijednom od njih 
+                      //jer BlocListener ne bi znao odakle da pristupi instanci
+                      BlocProvider<LogInBloc> (
+                        create: (context) => LogInBloc(
+                          //Ovde pristupamo instanci userRepository koja je kreirana u AuthenticationBloc
+                          userRepository: context.read<AuthenticationBloc>().userRepository,
+                           authenticationBloc: context.read<AuthenticationBloc>(),
+                          ),
+                        child: const LogInScreen(),
+                          ),
+                      BlocProvider<SignUpBloc>(
+                        create: (context) => SignUpBloc(
+                          userRepository: context.read<AuthenticationBloc>().userRepository,
+                           authenticationBloc: context.read<AuthenticationBloc>(),
+                          ),
+                        child: const SignUpScreen(),
+                      )
                     ],
                   ),
                 ),

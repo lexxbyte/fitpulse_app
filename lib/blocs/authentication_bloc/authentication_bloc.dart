@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,6 +36,20 @@ class AuthenticationBloc
         emit(AuthenticationState.authenticated(event.user!));
       } else {
         emit(const AuthenticationState.unauthenticated());
+      }
+    });
+
+    //Ovde koristimo on GoogleSignInRequired metodu koju smo definisali u authentication_event.dart
+    on<GoogleSignInRequired>((event, emit) async {
+      try {
+        final User? user = await userRepository.signInWithGoogle();
+        if (user != null) {
+          emit(AuthenticationState.authenticated(user));
+        } else {
+          emit(const AuthenticationState.unauthenticated());
+        }
+      } catch (e) {
+        log(e.toString(), name: 'Google Sign In Error');
       }
     });
   }
